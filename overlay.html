@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <title>Sakura Overlay</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black">
+    <div id="root"></div>
+
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+        const GlobalStyles = () => {
+          const styles = `
+            :root {
+              --background: 20 14.3% 4.1%;
+              --muted: 240 3.7% 15.9%;
+              --sakura-light: 340 100% 92%;
+              --sakura-pink: 330 80% 70%;
+              --sakura-deep: 320 60% 50%;
+              --rose-gold: 350 70% 75%;
+              --ethereal-white: 220 100% 98%;
+              --text-main: 220 20% 95%;
+            }
+
+            body {
+                background-color: hsl(var(--background));
+                overflow: hidden;
+            }
+            
+            .text-gradient-sakura {
+                background-image: linear-gradient(45deg, hsl(var(--sakura-light)), hsl(var(--rose-gold)));
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                color: transparent;
+            }
+
+            .sakura-glow {
+              filter: drop-shadow(0 0 3px hsl(var(--sakura-pink) / 0.7));
+            }
+            
+            .magenta-glow {
+              filter: drop-shadow(0 0 4px hsl(var(--sakura-deep) / 0.8));
+            }
+
+            .text-magenta-glow\\/40 {
+                color: hsl(var(--sakura-deep) / 0.4);
+                text-shadow: 0 0 5px hsl(var(--sakura-deep) / 0.5);
+            }
+
+            @keyframes shimmer {
+              0%, 100% {
+                opacity: 0.7;
+                filter: brightness(1);
+              }
+              50% {
+                opacity: 1;
+                filter: brightness(1.2);
+              }
+            }
+
+            @keyframes float {
+              0%, 100% {
+                transform: translateY(0);
+              }
+              50% {
+                transform: translateY(-3px);
+              }
+            }
+
+            @keyframes glow {
+                0%, 100% { 
+                    filter: drop-shadow(0 0 2px hsl(var(--sakura-pink))); 
+                }
+                50% { 
+                    filter: drop-shadow(0 0 5px hsl(var(--sakura-light))); 
+                }
+            }
+            
+            .animate-shimmer {
+              animation: shimmer 4s ease-in-out infinite;
+            }
+            .animate-float {
+              animation: float 3s ease-in-out infinite;
+            }
+            .animate-glow {
+                animation: glow 3.5s ease-in-out infinite;
+            }
+
+            .border-sakura-pink\\/20 { border-color: hsl(var(--sakura-pink) / 0.2); }
+            .border-rose-gold\\/30 { border-color: hsl(var(--rose-gold) / 0.3); }
+            .border-sakura-deep\\/20 { border-color: hsl(var(--sakura-deep) / 0.2); }
+            .border-magenta-glow\\/30 { border-color: hsl(var(--sakura-deep) / 0.3); }
+          `;
+          return <style>{styles}</style>;
+        };
+
+
+        const SakuraOverlay = () => {
+          return (
+            <div className="fixed inset-0 w-screen h-screen pointer-events-none overflow-hidden z-50">
+              <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-muted/20" />
+              
+              <svg
+                className="absolute top-0 left-0 w-full h-20 sakura-glow animate-shimmer"
+                viewBox="0 0 1092 80"
+                preserveAspectRatio="xMidYMin slice"
+              >
+                <defs>
+                  <linearGradient id="branchGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="hsl(var(--sakura-light))" />
+                    <stop offset="50%" stopColor="hsl(var(--sakura-pink))" />
+                    <stop offset="100%" stopColor="hsl(var(--rose-gold))" />
+                  </linearGradient>
+                  <linearGradient id="trunkGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="hsl(320 40% 45%)" />
+                    <stop offset="100%" stopColor="hsl(320 30% 35%)" />
+                  </linearGradient>
+                  <filter id="glow">
+                    <feGaussianBlur stdDeviation="3"/>
+                    <feMerge> 
+                      <feMergeNode/>
+                      <feMergeNode in="SourceGraphic"/> 
+                    </feMerge>
+                  </filter>
+                </defs>
+                <path d="M57,6 Q60,16 63,25 Q61,34 60,44 Q61,53 63,62 Q64,72 66,80" stroke="url(#trunkGradient)" strokeWidth="5" fill="none" opacity="0.9" />
+                <path d="M1035,6 Q1032,16 1029,25 Q1031,34 1032,44 Q1030,53 1029,62 Q1028,72 1026,80" stroke="url(#trunkGradient)" strokeWidth="5" fill="none" opacity="0.9" />
+                <path d="M57,31 Q114,25 171,28 Q228,31 285,25 Q313,22 342,28" stroke="url(#branchGradient)" strokeWidth="3" fill="none" opacity="0.8" filter="url(#glow)" />
+                <path d="M114,26 Q142,22 171,25 Q182,26 194,24" stroke="url(#branchGradient)" strokeWidth="2" fill="none" opacity="0.7" />
+                <path d="M228,30 Q245,26 262,29 Q273,30 285,27" stroke="url(#branchGradient)" strokeWidth="2" fill="none" opacity="0.7" />
+                <path d="M1035,31 Q978,25 921,28 Q864,31 807,25 Q779,22 750,28" stroke="url(#branchGradient)" strokeWidth="3" fill="none" opacity="0.8" filter="url(#glow)" />
+                <path d="M978,26 Q950,22 921,25 Q910,26 898,24" stroke="url(#branchGradient)" strokeWidth="2" fill="none" opacity="0.7" />
+                <path d="M864,30 Q847,26 830,29 Q819,30 807,27" stroke="url(#branchGradient)" strokeWidth="2" fill="none" opacity="0.7" />
+                
+                {[
+                  { x: 85, y: 28, size: 5, petals: 5 }, { x: 125, y: 24, size: 6, petals: 5 }, { x: 165, y: 26, size: 5, petals: 5 },
+                  { x: 199, y: 23, size: 4, petals: 5 }, { x: 239, y: 29, size: 7, petals: 5 }, { x: 273, y: 28, size: 5, petals: 5 },
+                  { x: 307, y: 26, size: 5, petals: 5 },
+                ].map((flower, i) => (
+                  <g key={i} className="animate-glow">
+                    <circle cx={flower.x} cy={flower.y} r="2" fill="hsl(var(--rose-gold))" opacity="0.9" />
+                    {[...Array(flower.petals)].map((_, petal) => {
+                      const angle = (petal * 360) / flower.petals;
+                      const petalX = flower.x + Math.cos((angle * Math.PI) / 180) * (flower.size / 2);
+                      const petalY = flower.y + Math.sin((angle * Math.PI) / 180) * (flower.size / 2);
+                      return <ellipse key={petal} cx={petalX} cy={petalY} rx={flower.size / 3} ry={flower.size / 2} fill="hsl(var(--sakura-pink))" opacity="0.8" transform={`rotate(${angle} ${petalX} ${petalY})`} />;
+                    })}
+                  </g>
+                ))}
+
+                {[
+                  { x: 1007, y: 28, size: 5, petals: 5 }, { x: 967, y: 24, size: 6, petals: 5 }, { x: 927, y: 26, size: 5, petals: 5 },
+                  { x: 893, y: 23, size: 4, petals: 5 }, { x: 853, y: 29, size: 7, petals: 5 }, { x: 819, y: 28, size: 5, petals: 5 },
+                  { x: 785, y: 26, size: 5, petals: 5 },
+                ].map((flower, i) => (
+                  <g key={i} className="animate-float">
+                    <circle cx={flower.x} cy={flower.y} r="2" fill="hsl(var(--rose-gold))" opacity="0.9" />
+                    {[...Array(flower.petals)].map((_, petal) => {
+                      const angle = (petal * 360) / flower.petals;
+                      const petalX = flower.x + Math.cos((angle * Math.PI) / 180) * (flower.size / 2);
+                      const petalY = flower.y + Math.sin((angle * Math.PI) / 180) * (flower.size / 2);
+                      return <ellipse key={petal} cx={petalX} cy={petalY} rx={flower.size / 3} ry={flower.size / 2} fill="hsl(var(--sakura-light))" opacity="0.7" transform={`rotate(${angle} ${petalX} ${petalY})`} />;
+                    })}
+                  </g>
+                ))}
+
+                {[...Array(8)].map((_, i) => (
+                  <g key={i}>
+                    <circle cx={68 + i * 34} cy={31 + Math.sin(i) * 9} r="2" fill="hsl(var(--sakura-deep))" opacity="0.6" className="animate-shimmer" />
+                    <ellipse cx={71 + i * 34} cy={33 + Math.sin(i) * 9} rx="1" ry="3" fill="hsl(120 30% 60%)" opacity="0.5" transform={`rotate(${i * 30} ${71 + i * 34} ${33 + Math.sin(i) * 9})`} />
+                  </g>
+                ))}
+              </svg>
+
+              <svg
+                className="absolute bottom-0 left-0 w-full h-20 sakura-glow animate-shimmer"
+                viewBox="0 0 1092 80"
+                preserveAspectRatio="xMidYMax slice"
+              >
+                  <defs>
+                    <linearGradient id="branchGradientBottom" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="hsl(var(--sakura-light))" />
+                      <stop offset="50%" stopColor="hsl(var(--sakura-pink))" />
+                      <stop offset="100%" stopColor="hsl(var(--rose-gold))" />
+                    </linearGradient>
+                    <linearGradient id="trunkGradientBottom" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="hsl(320 40% 45%)" />
+                      <stop offset="100%" stopColor="hsl(320 30% 35%)" />
+                    </linearGradient>
+                    <filter id="glowBottom">
+                      <feGaussianBlur stdDeviation="3"/>
+                    </filter>
+                  </defs>
+                <path d="M60,0 Q61,9 63,19 Q64,28 66,37 Q64,47 63,56 Q61,66 60,80" stroke="url(#trunkGradientBottom)" strokeWidth="5" fill="none" opacity="0.9" />
+                <path d="M1032,0 Q1031,9 1029,19 Q1028,28 1026,37 Q1028,47 1029,56 Q1031,66 1032,80" stroke="url(#trunkGradientBottom)" strokeWidth="5" fill="none" opacity="0.9" />
+                <path d="M60,49 Q114,55 171,52 Q228,49 285,55 Q313,58 342,52" stroke="url(#branchGradientBottom)" strokeWidth="3" fill="none" opacity="0.8" filter="url(#glowBottom)" />
+                <path d="M114,54 Q142,58 171,55 Q182,54 194,56" stroke="url(#branchGradientBottom)" strokeWidth="2" fill="none" opacity="0.7" />
+                <path d="M228,50 Q245,54 262,51 Q273,50 285,53" stroke="url(#branchGradientBottom)" strokeWidth="2" fill="none" opacity="0.7" />
+                <path d="M1032,49 Q978,55 921,52 Q864,49 807,55 Q779,58 750,52" stroke="url(#branchGradientBottom)" strokeWidth="3" fill="none" opacity="0.8" filter="url(#glowBottom)" />
+                <path d="M978,54 Q950,58 921,55 Q910,54 898,56" stroke="url(#branchGradientBottom)" strokeWidth="2" fill="none" opacity="0.7" />
+                <path d="M864,50 Q847,54 830,51 Q819,50 807,53" stroke="url(#branchGradientBottom)" strokeWidth="2" fill="none" opacity="0.7" />
+                
+                {[
+                  { x: 85, y: 52, size: 5, petals: 5 }, { x: 125, y: 56, size: 5, petals: 5 }, { x: 165, y: 54, size: 6, petals: 5 },
+                  { x: 199, y: 58, size: 4, petals: 5 }, { x: 239, y: 50, size: 7, petals: 5 }, { x: 273, y: 53, size: 5, petals: 5 },
+                ].map((flower, i) => (
+                  <g key={i} className="animate-float">
+                    <circle cx={flower.x} cy={flower.y} r="2" fill="hsl(var(--rose-gold))" opacity="0.9" />
+                    {[...Array(flower.petals)].map((_, petal) => {
+                      const angle = (petal * 360) / flower.petals;
+                      const petalX = flower.x + Math.cos((angle * Math.PI) / 180) * (flower.size / 2);
+                      const petalY = flower.y + Math.sin((angle * Math.PI) / 180) * (flower.size / 2);
+                      return <ellipse key={petal} cx={petalX} cy={petalY} rx={flower.size / 3} ry={flower.size / 2} fill="hsl(var(--sakura-deep))" opacity="0.8" transform={`rotate(${angle} ${petalX} ${petalY})`} />;
+                    })}
+                  </g>
+                ))}
+
+                {[
+                  { x: 1007, y: 52, size: 5, petals: 5 }, { x: 967, y: 56, size: 5, petals: 5 }, { x: 927, y: 54, size: 6, petals: 5 },
+                  { x: 893, y: 58, size: 4, petals: 5 }, { x: 853, y: 50, size: 7, petals: 5 }, { x: 819, y: 53, size: 5, petals: 5 },
+                ].map((flower, i) => (
+                  <g key={i} className="animate-glow">
+                    <circle cx={flower.x} cy={flower.y} r="2" fill="hsl(var(--rose-gold))" opacity="0.9" />
+                    {[...Array(flower.petals)].map((_, petal) => {
+                      const angle = (petal * 360) / flower.petals;
+                      const petalX = flower.x + Math.cos((angle * Math.PI) / 180) * (flower.size / 2);
+                      const petalY = flower.y + Math.sin((angle * Math.PI) / 180) * (flower.size / 2);
+                      return <ellipse key={petal} cx={petalX} cy={petalY} rx={flower.size / 3} ry={flower.size / 2} fill="hsl(var(--sakura-pink))" opacity="0.7" transform={`rotate(${angle} ${petalX} ${petalY})`} />;
+                    })}
+                  </g>
+                ))}
+
+                {[...Array(7)].map((_, i) => (
+                  <g key={i}>
+                    <circle cx={80 + i * 37} cy={53 + Math.cos(i) * 8} r="3" fill="hsl(var(--sakura-light))" opacity="0.6" className="animate-shimmer" />
+                    <ellipse cx={82 + i * 37} cy={55 + Math.cos(i) * 8} rx="1" ry="3" fill="hsl(120 40% 55%)" opacity="0.4" transform={`rotate(${i * 25} ${82 + i * 37} ${55 + Math.cos(i) * 8})`} />
+                  </g>
+                ))}
+              </svg>
+
+              <div className="absolute top-1 left-1/2 transform -translate-x-1/2">
+                <div className="text-lg font-thin text-gradient-sakura animate-shimmer opacity-80">
+                  ✦ Hanae Sakura ✦
+                </div>
+              </div>
+
+              <div className="absolute left-2 top-1/2 transform -translate-y-1/2 rotate-90 origin-center">
+                <div className="text-xs text-magenta-glow/40 animate-shimmer tracking-[0.3em]">
+                  ✧ METIUS881 ✧
+                </div>
+              </div>
+              
+              <div className="absolute right-2 top-1/2 transform -translate-y-1/2 -rotate-90 origin-center">
+                <div className="text-xs text-magenta-glow/40 animate-shimmer tracking-[0.3em]">
+                  ✧ METIUS881 ✧
+                </div>
+              </div>
+
+              <div className="absolute inset-0 w-full h-full flex justify-center items-center gap-8 p-16 pointer-events-auto">
+                
+                <div className="w-full max-w-sm h-full border-2 border-sakura-deep/40 rounded-md animate-glow relative" style={{ animationDuration: '4s' }}>
+                    <div className="absolute -inset-0.5 border border-rose-gold/30 rounded-md animate-shimmer opacity-80"></div>
+                    <div id="chat-embed-container" className="w-full h-full bg-black/20 rounded-[5px] p-2">
+                        <iframe 
+                            title="Chat da Twitch"
+                            src="https://www.twitch.tv/popout/metius881/chat?darkpopout" 
+                            height="100%" 
+                            width="100%"
+                            frameBorder="0"
+                            referrerPolicy="no-referrer"
+                        >
+                        </iframe>
+                    </div>
+                </div>
+
+                <div className="w-full max-w-5xl h-full border-2 border-sakura-deep/40 rounded-md animate-glow relative" style={{ animationDuration: '4s' }}>
+                    <div className="absolute -inset-0.5 border border-rose-gold/30 rounded-md animate-shimmer opacity-80"></div>
+                    <div className="w-full h-full bg-black/20 rounded-[5px]">
+                    </div>
+                </div>
+
+              </div>
+            </div>
+          );
+        };
+
+        function App() {
+          return (
+            <React.Fragment>
+              <GlobalStyles />
+              <main className="text-white min-h-screen">
+                  <SakuraOverlay />
+              </main>
+            </React.Fragment>
+          );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
+
